@@ -1,6 +1,10 @@
 package station.company;
 
-public class DesignDepartment extends Departments{
+public class DesignDepartment extends Department {
+    public DesignDepartment(int price, int staff, SecondaryCompany secondaryCompany) {
+        super(price, staff, secondaryCompany);
+    }
+
     public DesignDepartment(int price) {
         super(price);
     }

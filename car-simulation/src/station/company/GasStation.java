@@ -1,7 +1,12 @@
 package station.company;
 
-public class GasStation extends Departments{
+public class GasStation extends Department {
     private int fuel;
+
+    public GasStation(int price, int staff, SecondaryCompany secondaryCompany, int fuel) {
+        super(price, staff, secondaryCompany);
+        this.fuel = fuel;
+    }
 
     public GasStation(int price) {
         super(price);

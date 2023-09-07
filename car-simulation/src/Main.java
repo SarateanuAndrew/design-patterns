@@ -8,15 +8,15 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Random random = new Random();
-        Departments foodMarket = new FoodMarket(12);
-        Departments gasStation = new GasStation(20);
-        Departments mechanicalDepartment = new MechanicalDepartment(100);
-        Departments washing = new Washing(20);
-        Departments designDepartment = new DesignDepartment(40);
+        Department foodMarket = new FoodMarket(12);
+        Department gasStation = new GasStation(20);
+        Department mechanicalDepartment = new MechanicalDepartment(100);
+        Department washing = new Washing(20);
+        Department designDepartment = new DesignDepartment(40);
         List<StandardCar> cars = new ArrayList<>(List.of(new StandardCar(), new GoodCar(), new VipCar()));
         boolean cycle = true;
         Scanner scanner = new Scanner(System.in);
-        Map<Departments, Integer> map = new HashMap<>();
+        Map<Department, Integer> map = new HashMap<>();
         map.put(foodMarket, 600);
         map.put(gasStation, 800);
         map.put(mechanicalDepartment, 100);

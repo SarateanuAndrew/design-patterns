@@ -1,14 +1,17 @@
 package station.company;
 
-public abstract class Departments implements Company, CompanyStaffCount {
+public abstract class Department implements Company, CompanyStaffCount {
     private int price;
     private int staff;
     private SecondaryCompany secondaryCompany;
 
-    public Departments(int price, int staff, SecondaryCompany secondaryCompany) {
+    public Department(int price, int staff, SecondaryCompany secondaryCompany) {
         this.price = price;
         this.staff = staff;
         this.secondaryCompany = secondaryCompany;
+    }
+
+    public Department(int price) {
     }
 
     public int getPrice() {
