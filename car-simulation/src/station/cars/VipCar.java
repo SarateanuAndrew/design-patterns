@@ -1,12 +1,12 @@
 package station.cars;
 
-public class VipCars extends GoodCar {
+public class VipCar extends GoodCar {
     private int tuning;
 
-    public VipCars() {
+    public VipCar() {
     }
 
-    public VipCars(int food, int fuel, int repair, int clean, int tuning, int money, int bacshis, boolean discount) {
+    public VipCar(int food, int fuel, int repair, int clean, int tuning, int money, int bacshis, boolean discount) {
         super(food, fuel, repair, clean, money, bacshis, discount);
         this.tuning = tuning;
     }

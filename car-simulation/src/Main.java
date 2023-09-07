@@ -1,6 +1,6 @@
 import station.cars.GoodCar;
 import station.cars.StandardCar;
-import station.cars.VipCars;
+import station.cars.VipCar;
 import station.company.*;
 
 import java.util.*;
@@ -13,7 +13,7 @@ public class Main {
         Departments mechanicalDepartment = new MechanicalDepartment(100);
         Departments washing = new Washing(20);
         Departments designDepartment = new DesignDepartment(40);
-        List<StandardCar> cars = new ArrayList<>(List.of(new StandardCar(), new GoodCar(), new VipCars()));
+        List<StandardCar> cars = new ArrayList<>(List.of(new StandardCar(), new GoodCar(), new VipCar()));
         boolean cycle = true;
         Scanner scanner = new Scanner(System.in);
         Map<Departments, Integer> map = new HashMap<>();
@@ -57,8 +57,8 @@ public class Main {
                 showerQuantity = random.nextInt(3, 6);
                 paintQuantity = random.nextInt(2, 5);
                 if (car.getFood() == 0 || car.getFuel() == 0 || car.getRepair() == 0 || car.getClean() == 0) {
-                    if (car.getClass().equals(VipCars.class)) {
-                        ((VipCars) car).setTuning(random.nextInt(0, 2));
+                    if (car.getClass().equals(VipCar.class)) {
+                        ((VipCar) car).setTuning(random.nextInt(0, 2));
                         car.setMoney(random.nextInt(300, 500));
                         System.out.println(j + ". Vip Car ");
                     } else if (car.getClass().equals(StandardCar.class)) {
@@ -107,9 +107,9 @@ public class Main {
                         washUse += 1;
                         washIncome += showerQuantity * washing.getPrice();
                     }
-                    if (car.getClass().equals(VipCars.class) && ((VipCars) car).getTuning() == 0 && map.get(designDepartment) > 0 && car.getMoney() >= (paintQuantity * designDepartment.getPrice())) {
+                    if (car.getClass().equals(VipCar.class) && ((VipCar) car).getTuning() == 0 && map.get(designDepartment) > 0 && car.getMoney() >= (paintQuantity * designDepartment.getPrice())) {
                         map.replace(designDepartment, map.get(designDepartment) - paintQuantity);
-                        ((VipCars) car).setTuning(1);
+                        ((VipCar) car).setTuning(1);
                         car.setMoney(car.getMoney() - paintQuantity * designDepartment.getPrice());
                         daySum += paintQuantity * designDepartment.getPrice();
                         System.out.println("    Need coloured: " + paintQuantity);
