@@ -1,11 +1,10 @@
-# Solid Principles
-
-
-## Author: Sarateanu Andrei-Cristian
+# Author: Sarateanu Andrei-Cristian
 
 ----
 
+# Topic: *SOLID PRINCIPLES*
 ## Objectives:
+
 
 &ensp; &ensp; __1. Study and understand the SOLID Principles.__
 
@@ -79,6 +78,228 @@ public abstract class Departments implements Company, CompanyStaffCount{
 }
 ```
 
-## Conclusions / Screenshots / Results
+## Conclusion
 To sum up, I have created a simulation of passing months ans the statistics of cars mood and the income of station and it's departments.
 In my code I managed to implement somehow all SOLID principles and I learned all tactics used in the SOLID design principles.
+
+##
+
+----
+
+# Topic: *Creational Design Patterns*
+## Objectives:
+&ensp; &ensp; __1. Study and understand the Creational Design Patterns.__
+
+&ensp; &ensp; __2. Choose a domain, define its main classes/models/entities and choose the appropriate instantiation mechanisms.__
+
+&ensp; &ensp; __3. Use some creational design patterns for object instantiation in a sample project.__
+
+## Some Theory:
+&ensp; &ensp; Creational design patterns are a category of design patterns that focus on the process of object creation. They provide a way to create objects in a flexible and controlled manner, while decoupling the client code from the specifics of object creation. Creational design patterns address common problems encountered in object creation, such as how to create objects with different initialization parameters, how to create objects based on certain conditions, or how to ensure that only a single instance of an object is created. There are several creational design patterns that have their own strengths and weaknesses. Each of it is best suited for solving specific problems related to object creation. By using creational design patterns, developers can improve the flexibility, maintainability, and scalability of their code.
+
+&ensp; &ensp; Some examples of this kind of design patterns are:
+
+* Singleton
+* Builder
+* Prototype
+* Object Pooling
+* Factory Method
+* Abstract Factory
+
+## Implementation
+
+* Introduction
+
+I decided to implement Singleton, Builder, Prototype and Factory design principles. The most of them I interact every day.
+I created a java program where there is a Company and it is shown its department, that has employee. Also, employee has their own list of Obligations.
+
+* Snippets from your files.
+
+* Singleton Principle:
+
+```java
+public class CompanyDepartment {
+    private static CompanyDepartment companyDepartment;
+    private String name;
+
+    private CompanyDepartment() {
+    }
+
+    public static CompanyDepartment getCompanyDepartment() {
+        if (companyDepartment == null) {
+            companyDepartment = new CompanyDepartment();
+        }
+        return companyDepartment;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+* Prototype Principle:
+
+```java
+public class Employee implements Cloneable {
+    private List<String> obligations;
+    private String fullName;
+    private int salary;
+    private CompanyDepartment department;
+
+    public Employee(EmployeeBuilder builder) {
+        this.obligations = builder.obligations;
+        this.fullName = builder.fullName;
+        this.salary = builder.salary;
+        this.department = builder.department;
+    }
+
+    public void saveObligation(Obligation obligation) {
+        obligations.add(obligation.employeeObligation());
+    }
+
+    public void deleteObligation(Obligation obligation) {
+        obligations.remove(obligation.employeeObligation());
+    }
+
+    public List<String> getObligations() {
+        return obligations;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public CompanyDepartment getDepartment() {
+        return department;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Object clone = super.clone();
+        List<String> tempOblig = new ArrayList<String>(this.getObligations());
+        String tempFullName = this.getFullName();
+        int tempSalary = this.getSalary();
+        CompanyDepartment tempDepartment = this.getDepartment();
+        return new EmployeeBuilder()
+                .setSalary(tempSalary)
+                .setDepartment(tempDepartment)
+                .setObligations(tempOblig)
+                .setFullName(tempFullName)
+                .build();
+    }
+}
+```
+
+* Builder Principle:
+
+```java
+public static class EmployeeBuilder {
+    private List<String> obligations;
+    private String fullName;
+    private int salary;
+    private CompanyDepartment department;
+
+    public EmployeeBuilder setFullName(String fullName) {
+        this.fullName = fullName;
+        return this;
+    }
+
+    public EmployeeBuilder setSalary(int salary) {
+        this.salary = salary;
+        return this;
+    }
+
+    public EmployeeBuilder setObligations(List<String> obligations) {
+        this.obligations = obligations;
+        return this;
+    }
+
+    public EmployeeBuilder setDepartment(CompanyDepartment department) {
+        this.department = department;
+        return this;
+    }
+
+    public Employee build() {
+        return new Employee(this);
+    }
+}
+```
+
+* Factory Principle:
+
+```java
+public interface Obligation {
+    String employeeObligation();
+}
+
+public class BackObligation implements Obligation {
+
+    @Override
+    public String employeeObligation() {
+        return "BackEnd";
+    }
+}
+
+public class ObligationFactory {
+    public Obligation createObligation(String obligation)
+    {
+        if (obligation == null || obligation.isEmpty())
+            return null;
+        return switch (obligation) {
+            case "B" -> new BackObligation();
+            case "D" -> new DesignObligation();
+            case "F" -> new FrontObligation();
+            default -> throw new IllegalArgumentException("Unknown obligation " + obligation);
+        };
+    }
+}
+```
+
+Finally, I just show how they work in the Main class:
+
+```java
+ public class Main {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        CompanyDepartment department = CompanyDepartment.getCompanyDepartment();
+        department.setName("Engine");
+        CompanyDepartment department1 = CompanyDepartment.getCompanyDepartment();
+        System.out.println("Department name is " + department1.getName());
+        Employee emp1 = new Employee.EmployeeBuilder()
+                .setObligations(new ArrayList<>())
+                .setSalary(1200)
+                .setDepartment(department)
+                .setFullName("Vasea")
+                .build();
+
+        ObligationFactory obligationFactory = new ObligationFactory();
+        Obligation back = obligationFactory.createObligation("B");
+        Obligation front = obligationFactory.createObligation("F");
+        Obligation design = obligationFactory.createObligation("D");
+        emp1.saveObligation(back);
+        emp1.saveObligation(front);
+
+        Employee emp2 = (Employee) emp1.clone();
+        Employee emp3 = (Employee) emp1.clone();
+        emp3.saveObligation(design);
+        Employee emp4 = (Employee) emp1.clone();
+        emp4.deleteObligation(back);
+
+        System.out.println(emp2.getObligations());
+        System.out.println(emp3.getObligations());
+        System.out.println(emp4.getObligations());
+    }
+}
+```
+## Conclusion
+To sum up, I have created a simple code that implement the 4 design patterns that I choosed.
+In my code I managed to implement somehow 4 creational design patterns. Moreover, I managed not only to copy and use them,
+but also to connect 2 patterns in one class. That's why I think I have understand the creational design patterns main purpose.
