@@ -303,3 +303,189 @@ Finally, I just show how they work in the Main class:
 To sum up, I have created a simple code that implement the 4 design patterns that I choosed.
 In my code I managed to implement somehow 4 creational design patterns. Moreover, I managed not only to copy and use them,
 but also to connect 2 patterns in one class. That's why I think I have understand the creational design patterns main purpose.
+
+----
+# Topic: *Structural Design Patterns*
+## Objectives:
+&ensp; &ensp; __1. Study and understand the Structural Design Patterns.__
+
+&ensp; &ensp; __2. As a continuation of the previous laboratory work, think about the functionalities that your system will need to provide to the user.__
+
+&ensp; &ensp; __3. Implement some additional functionalities, or create a new project using structural design patterns.__
+
+## Theoretical background:
+&ensp; &ensp; Structural design patterns are a category of design patterns that focus on the composition of classes and objects to form larger structures and systems. They provide a way to organize objects and classes in a way that is both flexible and efficient, while allowing for the reuse and modification of existing code. Structural design patterns address common problems encountered in the composition of classes and objects, such as how to create new objects that inherit functionality from existing objects, how to create objects that share functionality without duplicating code, or how to define relationships between objects in a flexible and extensible way.
+
+&ensp; &ensp; Some examples of from this category of design patterns are:
+
+* Adapter
+* Bridge
+* Composite
+* Decorator
+* Facade
+* Flyweight
+* Proxy
+
+## Implementation
+
+* Introduction
+
+I decided to implement Adapter, Bridge, Composite and Decorator design patterns.
+I created a java program where there is are Cars and Tractors and they have stickers and accessories, then we adapt car to tractor.
+
+* Snippets from your files.
+
+* Adapter:
+
+```java
+public class CarAdapter implements TractorFunctionality {
+    Car car;
+    public CarAdapter(Car car) {
+        this.car = car;
+    }
+
+    public void workOnField()
+    {
+        car.drive();
+    }
+
+    @Override
+    public int displayFinalPrice() {
+        return car.finalPrice();
+    }
+}
+```
+
+* Bridge:
+
+```java
+public abstract class TractorAccessoryBridge {
+    protected TractorAccessory tractorAccessory;
+
+    public TractorAccessoryBridge(TractorAccessory tractorAccessory){
+        this.tractorAccessory = tractorAccessory;
+    }
+
+    abstract public int additionPrice();
+}
+```
+
+* Composite:
+
+```java
+public class StickerInstaller implements CarSticker {
+    private int price;
+
+    public StickerInstaller(int price) {
+        this.price = price;
+    }
+
+    private List<CarSticker> carStickers = new ArrayList<>();
+
+    @Override
+    public void install(String fillColor) {
+        for(CarSticker sh : carStickers)
+        {
+            sh.install(fillColor);
+        }
+    }
+
+    public void add(CarSticker s){
+        this.carStickers.add(s);
+    }
+
+    //removing shape from drawing
+    public void remove(CarSticker s){
+        carStickers.remove(s);
+    }
+
+    public int getPrice() {
+        return price * carStickers.size();
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    //removing all the shapes
+    public void clear(){
+        System.out.println("Uninstalling all stickers from car");
+        this.carStickers.clear();
+    }
+}
+```
+
+* Decorator:
+
+```java
+public class CarDecorator implements Car {
+    protected Car car;
+
+    public CarDecorator(Car c) {
+        this.car = c;
+    }
+
+    @Override
+    public void drive() {
+        System.out.println("Drive on road");
+    }
+
+    @Override
+    public int finalPrice() {
+        return this.car.finalPrice();
+    }
+
+}
+```
+
+Finally, I just show how they work in the Main class:
+
+```java
+ public class Main {
+    public static void main(String[] args) {
+        //Bridge
+        TractorAccessoryBridge sweeper = new Sweeper(new TitanTractorAccessory(), 100);
+        sweeper.additionPrice();
+
+        TractorAccessoryBridge aerator = new Aerator(new SteelTractorAccessory(), 200);
+        aerator.additionPrice();
+
+        //Composite
+        CarSticker square1 = new GirlSticker();
+        CarSticker square2 = new GirlSticker();
+        CarSticker cir = new MonsterSticker();
+
+        StickerInstaller stickerInstaller = new StickerInstaller(100);
+        stickerInstaller.add(square2);
+        stickerInstaller.add(square2);
+        stickerInstaller.add(cir);
+
+        stickerInstaller.install("Red");
+
+        stickerInstaller.clear();
+
+        stickerInstaller.add(square1);
+        stickerInstaller.add(cir);
+        stickerInstaller.install("Green");
+
+
+//        Decorator
+        Car sportsCar = new SportsCar(new BasicCar("Scoda", 10000, stickerInstaller), 1000);
+        System.out.println(sportsCar.finalPrice());
+
+        Car sportsLuxuryCar = new SportsCar(new LuxuryCar(new BasicCar("Mercedes", 40000, stickerInstaller), 10000), 10000);
+        System.out.println(sportsLuxuryCar.finalPrice());
+
+
+//        Adapter
+        TractorFunctionality tractorFunctionality = new Tractor(aerator, 1200000);
+        TractorFunctionality carAdapter = new CarAdapter(sportsCar);
+        System.out.println(tractorFunctionality.displayFinalPrice());
+        carAdapter.workOnField();
+    }
+}
+```
+## Conclusion
+To sum up, I have created a simple code that implement the 4 design patterns that I have chosen.
+In my code I managed to implement somehow 4 structural design patterns. Moreover, I managed not only to copy and use them,
+but also to interconnect them. That's why I think I have understood the structural design patterns main purpose.
