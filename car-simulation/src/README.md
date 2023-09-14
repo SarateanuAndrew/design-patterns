@@ -489,3 +489,244 @@ Finally, I just show how they work in the Main class:
 To sum up, I have created a simple code that implement the 4 design patterns that I have chosen.
 In my code I managed to implement somehow 4 structural design patterns. Moreover, I managed not only to copy and use them,
 but also to interconnect them. That's why I think I have understood the structural design patterns main purpose.
+
+----
+# Topic: *Behavioral Design Patterns*
+## Objectives:
+&ensp; &ensp; __1. Study and understand the Behavioral Design Patterns.__
+
+&ensp; &ensp; __2. As a continuation of the previous laboratory work, think about what communication between software entities might be involed in your system.__
+
+&ensp; &ensp; __3. Create a new Project or add some additional functionalities using behavioral design patterns.__
+
+## Theoretical background:
+&ensp; &ensp; Behavioral design patterns are a category of design patterns that focus on the interaction and communication between objects and classes. They provide a way to organize the behavior of objects in a way that is both flexible and reusable, while separating the responsibilities of objects from the specific implementation details. Behavioral design patterns address common problems encountered in object behavior, such as how to define interactions between objects, how to control the flow of messages between objects, or how to define algorithms and policies that can be reused across different objects and classes.
+
+&ensp; &ensp; Some examples from this category of design patterns are :
+
+* Chain of Responsibility
+* Command
+* Interpreter
+* Iterator
+* Mediator
+* Observer
+* Strategy
+
+## Implementation
+
+* Introduction
+
+I decided to implement Strategy, Iterator, Observer and command design patterns.
+I created a java program where there is are Credit Cards that have a functionality and the calling of functionality is observed by observer. Command is made to call the functionality of the cards.
+The Iterator iterates the products that can be bought using credit card.
+
+* Snippets from your files.
+
+* Iterator:
+
+```java
+public class ItemBar {
+    ItemCollection itemCollection;
+    public ItemBar(ItemCollection itemCollection) {
+        this.itemCollection = itemCollection;
+    }
+
+    public void printItemsPrices() {
+        Iterator iterator = itemCollection.createIterator();
+        System.out.println("-------NOTIFICATION BAR------------");
+        while (iterator.hasNext()) {
+            Item n = (Item) iterator.next();
+            System.out.println(n.getPrice());
+        }
+    }
+}
+```
+
+* Observer:
+
+```java
+public class CardUsage implements Usage {
+    private List<Observer> observers;
+    private String message;
+    private boolean changed;
+    private final Object MUTEX = new Object();
+
+    public CardUsage() {
+        this.observers = new ArrayList<>();
+    }
+
+    @Override
+    public void register(Observer obj) {
+        if (obj == null) throw new NullPointerException("Null Observer");
+        synchronized (MUTEX) {
+            if (!observers.contains(obj)) observers.add(obj);
+        }
+    }
+
+    @Override
+    public void unregister(Observer obj) {
+        synchronized (MUTEX) {
+            observers.remove(obj);
+        }
+    }
+
+    @Override
+    public void notifyObservers() {
+        List<Observer> observersLocal = null;
+        //synchronization is used to make sure any observer registered after message is received is not notified
+        synchronized (MUTEX) {
+            if (!changed)
+                return;
+            observersLocal = new ArrayList<>(this.observers);
+            this.changed = false;
+        }
+        for (Observer obj : observersLocal) {
+            obj.update();
+        }
+    }
+
+    @Override
+    public Object getUpdate(Observer obj) {
+        return this.message;
+    }
+
+    public void postMessage(String msg) {
+        System.out.println("Message Posted to Topic:" + msg);
+        this.message = msg;
+        this.changed = true;
+        notifyObservers();
+    }
+
+}
+```
+
+* Command:
+
+```java
+public class CardTypeDeterminerUtil {
+
+    public static CardFunctionality getCardType(CardFunctionality cardFunctionality) {
+        if (cardFunctionality.getClass().equals(CreditCardStrategy.class)) {
+            return new CreditCardStrategy();
+        } else {
+            return new PaypalStrategy();
+        }
+    }
+
+}
+```
+
+* Strategy:
+
+```java
+public class ShoppingCart {
+    List<Item> items;
+    public ShoppingCart() {
+        this.items = new ArrayList<>();
+    }
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
+    public void removeItem(Item item) {
+        this.items.remove(item);
+    }
+    public int calculateTotal() {
+        int sum = 0;
+        for (Item item : items) {
+            sum += item.getPrice();
+        }
+        return sum;
+    }
+    public void pay(PaymentStrategy paymentMethod) {
+        int amount = calculateTotal();
+        paymentMethod.pay(amount);
+    }
+}
+
+```
+
+Finally, I just show how they work in the Main class:
+
+```java
+ public class Main {
+    public static void main(String[] args) {
+        //Strategy
+        ShoppingCart cart = new ShoppingCart();
+
+        Item item1 = new Item("1234", 10);
+        Item item2 = new Item("5678", 40);
+
+        cart.addItem(item1);
+        cart.addItem(item2);
+
+        //pay by paypal
+        cart.pay(new PaypalStrategy("myemail@example.com", "mypwd"));
+
+        //pay by credit card
+        cart.pay(new CreditCardStrategy("Pankaj Kumar", "1234567890123456", "786", "12/15"));
+
+        //Iterator
+        ItemCollection nc = new ItemCollection();
+        nc.addItem("asd", 43);
+        nc.addItem("rew", 53);
+        ItemBar nb = new ItemBar(nc);
+        nb.printItemsPrices();
+
+        //Command
+        //Creating the receiver object
+        CreditCardStrategy creditCardStrategy = new CreditCardStrategy();
+        PaypalStrategy paypalStrategy = new PaypalStrategy();
+        CardFunctionality creditCard = CardTypeDeterminerUtil.getCardType(creditCardStrategy);
+        CardFunctionality paypalCard = CardTypeDeterminerUtil.getCardType(paypalStrategy);
+
+        //creating command and associating with receiver
+        Transfer transfer = new Transfer(creditCard);
+
+        //Creating invoker and associating with Command
+        FunctionalityInvoker invoker = new FunctionalityInvoker(transfer);
+
+        //perform action on invoker object
+        String transferInvoker = invoker.execute();
+
+        Deposite deposite = new Deposite(creditCard);
+        invoker = new FunctionalityInvoker(deposite);
+        String depositInvoker = invoker.execute();
+
+        Payment payment = new Payment(paypalCard);
+        invoker = new FunctionalityInvoker(payment);
+        String paymentInvoker = invoker.execute();
+
+        //Observer
+        //create subject
+        CardUsage creditCardUsage = new CardUsage();
+        CardUsage paypalUsage = new CardUsage();
+
+        //create observers
+        Observer creditCardObserver = new CardUsageSubscriber("Credit Card observer ");
+        Observer paypalObserver = new CardUsageSubscriber("Paypal Observer ");
+
+
+        //register observers to the subject
+        creditCardUsage.register(creditCardObserver);
+        paypalUsage.register(paypalObserver);
+
+
+        //attach observer to subject
+        creditCardObserver.setSubject(creditCardUsage);
+        paypalObserver.setSubject(paypalUsage);
+
+        //check if any update is available
+        creditCardObserver.update();
+        paypalObserver.update();
+
+        //now send message to subject
+        creditCardUsage.postMessage(transferInvoker);
+        paypalUsage.postMessage(paymentInvoker);
+    }
+}
+```
+
+## Conclusion
+To sum up, I have created a simple code that implement the 4 design patterns that I have chosen.
+In my code I managed to implement somehow 4 behavioral design patterns. Moreover, I managed not only to copy and use them,
+but also to interconnect them. That's why I think I have understood the behavioral design patterns main purpose.
