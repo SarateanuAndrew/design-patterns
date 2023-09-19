@@ -1,7 +1,6 @@
 package structural.bridge;
 
 public class Sweeper extends TractorAccessoryBridge {
-
     public Sweeper(TractorAccessory c, int price) {
         super(c);
         this.price = price;

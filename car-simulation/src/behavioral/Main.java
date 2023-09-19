@@ -4,10 +4,7 @@ import behavioral.command.CardTypeDeterminerUtil;
 import behavioral.command.cards.CardFunctionality;
 import behavioral.command.cards.CreditCardStrategy;
 import behavioral.command.cards.PaypalStrategy;
-import behavioral.command.functionality.Deposite;
-import behavioral.command.functionality.FunctionalityInvoker;
-import behavioral.command.functionality.Payment;
-import behavioral.command.functionality.Transfer;
+import behavioral.command.functionality.*;
 import behavioral.iterator.ItemBar;
 import behavioral.iterator.ItemCollection;
 import behavioral.observer.CardUsage;
@@ -48,7 +45,7 @@ public class Main {
         CardFunctionality paypalCard = CardTypeDeterminerUtil.getCardType(paypalStrategy);
 
         //creating command and associating with receiver
-        Transfer transfer = new Transfer(creditCard);
+        Command transfer = new Transfer(creditCard);
 
         //Creating invoker and associating with Command
         FunctionalityInvoker invoker = new FunctionalityInvoker(transfer);
@@ -56,11 +53,11 @@ public class Main {
         //perform action on invoker object
         String transferInvoker = invoker.execute();
 
-        Deposite deposite = new Deposite(creditCard);
+        Command deposite = new Deposite(creditCard);
         invoker = new FunctionalityInvoker(deposite);
         String depositInvoker = invoker.execute();
 
-        Payment payment = new Payment(paypalCard);
+        Command payment = new Payment(paypalCard);
         invoker = new FunctionalityInvoker(payment);
         String paymentInvoker = invoker.execute();
 

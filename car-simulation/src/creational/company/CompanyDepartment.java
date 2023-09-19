@@ -7,7 +7,7 @@ public class CompanyDepartment {
     private CompanyDepartment() {
     }
 
-    public static CompanyDepartment getCompanyDepartment() {
+    public static CompanyDepartment getInstance() {
         if (companyDepartment == null) {
             companyDepartment = new CompanyDepartment();
         }

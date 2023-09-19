@@ -1,9 +1,7 @@
 package structural.bridge;
 
 public class Aerator extends TractorAccessoryBridge {
-
     private int price;
-
     public Aerator(TractorAccessory c, int price) {
         super(c);
         this.price = price;

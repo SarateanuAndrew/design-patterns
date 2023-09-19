@@ -14,8 +14,7 @@ public class StickerInstaller implements CarSticker {
 
     @Override
     public void install(String fillColor) {
-        for(CarSticker sh : carStickers)
-        {
+        for(CarSticker sh : carStickers) {
             sh.install(fillColor);
         }
     }
@@ -24,7 +23,6 @@ public class StickerInstaller implements CarSticker {
         this.carStickers.add(s);
     }
 
-    //removing shape from drawing
     public void remove(CarSticker s){
         carStickers.remove(s);
     }
@@ -37,7 +35,6 @@ public class StickerInstaller implements CarSticker {
         this.price = price;
     }
 
-    //removing all the shapes
     public void clear(){
         System.out.println("Uninstalling all stickers from car");
         this.carStickers.clear();

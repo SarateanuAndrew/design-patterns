@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws CloneNotSupportedException {
-        CompanyDepartment department = CompanyDepartment.getCompanyDepartment();
+        CompanyDepartment department = CompanyDepartment.getInstance();
         department.setName("Engine");
-        CompanyDepartment department1 = CompanyDepartment.getCompanyDepartment();
+        CompanyDepartment department1 = CompanyDepartment.getInstance();
         System.out.println("Department name is " + department1.getName());
         Employee emp1 = new Employee.EmployeeBuilder()
                 .setObligations(new ArrayList<>())
